@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Apply for a loan — TIPFIN</title>
+<link rel="icon" type="image/png" href="logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div data-include="header"></div>
+
+<section class="page-hero">
+  <div class="container reveal">
+    <div class="crumbs"><a href="index.html">Home</a> · Apply</div>
+    <h1>Apply for your loan today</h1>
+    <p>Start your loan application using our secure online system. Designed to be simple, fast and accessible from any device.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="grid cols-2" style="gap:30px;align-items:start">
+      <div class="card reveal" style="padding:28px">
+        <h2>Loan application</h2>
+        <p>All fields are required. Your data is encrypted and securely stored.</p>
+
+        <div id="apply-msg"></div>
+        <form id="apply-form">
+          <div class="grid cols-2" style="gap:14px">
+            <div class="field"><label>First name</label><input required name="name" id="f-name"/></div>
+            <div class="field"><label>Last name</label><input required name="lastname" id="f-lastname"/></div>
+          </div>
+          <div class="grid cols-2" style="gap:14px">
+            <div class="field"><label>Email</label><input required type="email" name="email" id="f-email"/></div>
+            <div class="field"><label>Phone number</label><input required type="tel" inputmode="numeric" name="phone" id="f-phone"/></div>
+          </div>
+          <div class="grid cols-2" style="gap:14px">
+            <div class="field"><label>ID number / passport</label><input required name="idno" id="f-idno"/></div>
+            <div class="field"><label>Country of residence</label>
+              <select name="country"><option>South Africa</option><option>Botswana</option><option>Namibia</option><option>Zimbabwe</option><option>Other</option></select>
+            </div>
+          </div>
+          <div class="grid cols-2" style="gap:14px">
+            <div class="field"><label>Employment status</label>
+              <select required name="employ"><option>Employed (Full-time)</option><option>Employed (Part-time)</option><option>Self-employed</option><option>Business owner</option><option>Contract / freelance</option><option>Pensioner</option><option>Unemployed</option></select>
+            </div>
+            <div class="field"><label>Monthly income (R)</label><input required type="number" name="income" min="0" step="100"/></div>
+          </div>
+          <div class="grid cols-2" style="gap:14px">
+            <div class="field"><label>Loan type</label>
+              <select required name="loanType"><option>Personal Loan</option><option>Business Loan</option><option>Vehicle Loan</option><option>Debt Consolidation</option><option>Education Loan</option><option>Emergency Cash</option></select>
+            </div>
+            <div class="field"><label>Loan amount (R)</label><input required type="number" name="loanAmount" min="500" step="500"/></div>
+          </div>
+          <div class="grid cols-2" style="gap:14px">
+            <div class="field"><label>Repayment term (months)</label>
+              <select required name="loanTearm"><option>6</option><option>12</option><option>18</option><option selected>24</option><option>36</option><option>48</option><option>60</option></select>
+            </div>
+            <div class="field"><label>Loan purpose</label>
+              <input required name="loanPurpose" placeholder="e.g. home renovation"/>
+            </div>
+          </div>
+          <div class="field"><label>ID document — file name / link</label>
+            <input required name="idDoc" placeholder="e.g. john_doe_id.pdf"/>
+            <span class="hint">For this online intake, paste a file name or document link. Our team will request the file securely.</span></div>
+          <div class="field"><label>Bank statement / payslip — file name / link</label>
+            <input required name="bank" placeholder="e.g. august_bank_statement.pdf"/></div>
+
+          <div class="callout info">By submitting, you agree to TIPFIN's terms. Approval does not guarantee payout — final disbursement is completed by TIPFIN (PTY) LTD.</div>
+
+          <button class="btn btn-primary btn-block" type="submit" id="apply-btn">
+            <span id="apply-btn-text">Submit application</span>
+          </button>
+        </form>
+      </div>
+
+      <div class="reveal">
+        <div class="card" style="margin-bottom:14px">
+          <h3>What you'll need</h3>
+          <ul style="color:var(--ink-soft);line-height:1.9;margin:8px 0 0 18px">
+            <li>Valid ID document or passport</li>
+            <li>Proof of income (bank statement / payslip)</li>
+            <li>Employment & income details</li>
+            <li>Loan amount and purpose</li>
+          </ul>
+        </div>
+        <div class="feature-img" style="margin-bottom:14px">
+          <img src="https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?auto=format&fit=crop&w=1200&q=70" alt="Person reviewing documents"/>
+        </div>
+        <div class="card">
+          <h3>How processing works</h3>
+          <ol style="color:var(--ink-soft);line-height:1.9;margin:8px 0 0 18px">
+            <li>Your data is securely stored.</li>
+            <li>An evaluation is run automatically.</li>
+            <li>Status tracking is available immediately.</li>
+            <li>After approval, contact TIPFIN to receive funds.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div data-include="footer"></div>
+<div data-include="tabs"></div>
+<script src="_partials.js"></script>
+<script src="app.js"></script>
+<script>
+const u = TIPFIN_SESSION.requireAuth("register.html");
+if (u) {
+  document.getElementById("f-name").value = u.name || "";
+  document.getElementById("f-lastname").value = u.lastname || "";
+  document.getElementById("f-email").value = u.email || "";
+  document.getElementById("f-phone").value = u.phone || "";
+  document.getElementById("f-idno").value = u.idno || "";
+}
+
+const form = document.getElementById("apply-form");
+const msg = document.getElementById("apply-msg");
+const btn = document.getElementById("apply-btn");
+const btnText = document.getElementById("apply-btn-text");
+
+form.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  msg.innerHTML = "";
+  btn.disabled = true;
+  btnText.innerHTML = '<span class="spinner"></span> Submitting...';
+
+  const fd = new FormData(form);
+  const reference = Math.floor(100000 + Math.random()*900000);
+
+  const payload = {
+    name: fd.get("name"),
+    lastname: fd.get("lastname"),
+    Email: String(fd.get("email")).trim().toLowerCase(),
+    Phonenumber: parseInt(String(fd.get("phone")).replace(/\D/g,"")) || 0,
+    employ: fd.get("employ"),
+    income: String(fd.get("income")),
+    loanType: fd.get("loanType"),
+    loanAmount: String(fd.get("loanAmount")),
+    loanTearm: String(fd.get("loanTearm")),
+    loanPurpose: fd.get("loanPurpose"),
+    idNo: fd.get("idno"),
+    reference: reference,
+  };
+
+  try {
+    const session = TIPFIN_SESSION.get();
+    let row;
+    if (session && session.rowId) {
+      row = await TIPFIN_API.updateUserRow(session.rowId, payload);
+    } else {
+      row = await TIPFIN_API.createUserRow(payload);
+    }
+    const updated = {
+      ...session,
+      rowId: row.id,
+      email: payload.Email,
+      name: payload.name,
+      lastname: payload.lastname,
+      idno: payload.idNo,
+      phone: payload.Phonenumber,
+      hasApplied: true,
+      loanAmount: payload.loanAmount,
+      loanType: payload.loanType,
+      loanTearm: payload.loanTearm,
+      loanPurpose: payload.loanPurpose,
+      reference: reference,
+      appliedAt: Date.now()
+    };
+    TIPFIN_SESSION.set(updated);
+    msg.innerHTML = '<div class="callout ok">Application submitted! Reference <strong>#'+reference+'</strong>. Redirecting to your dashboard...</div>';
+    setTimeout(()=> location.href = "dashboard.html", 1100);
+  } catch (err) {
+    console.error(err);
+    msg.innerHTML = '<div class="callout err">Submission failed: '+err.message+'</div>';
+    btn.disabled = false; btnText.textContent = "Submit application";
+  }
+});
+</script>
+</body>
+</html>

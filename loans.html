@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Loan Products — TIPFIN</title>
+<link rel="icon" type="image/png" href="logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div data-include="header"></div>
+
+<section class="page-hero">
+  <div class="container reveal">
+    <div class="crumbs"><a href="index.html">Home</a> · Loan Products</div>
+    <h1>Loans designed for every chapter of your life</h1>
+    <p>Pick the loan that fits your goal. Use our calculator to estimate repayments, then apply in minutes.</p>
+  </div>
+</section>
+
+<!-- CALCULATOR -->
+<section>
+  <div class="container">
+    <div class="grid cols-2" style="gap:30px">
+      <div class="card reveal" style="padding:28px">
+        <span class="eyebrow"><span class="dot"></span> Loan calculator</span>
+        <h2 style="margin-top:10px">Estimate your repayment</h2>
+        <p>Calculation: 3% of loan amount is added to the principal, divided across the repayment term.</p>
+        <div class="field"><label>Loan amount (R)</label>
+          <input type="number" id="calc-amount" min="500" step="500" value="50000"/></div>
+        <div class="field"><label>Repayment term (months)</label>
+          <input type="number" id="calc-term" min="1" max="84" value="24"/></div>
+        <div class="callout info" id="calc-result"></div>
+        <a class="btn btn-primary btn-block" href="register.html">Apply for this loan</a>
+      </div>
+      <div class="feature-img reveal">
+        <img src="https://images.unsplash.com/photo-1579621970795-87facc2f976d?auto=format&fit=crop&w=1200&q=70" alt="Calculator"/>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOAN GRID -->
+<section style="background:#fff">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot"></span> All products</span>
+      <h2>Choose the right loan</h2>
+    </div>
+    <div class="grid cols-3">
+
+      <article class="loan reveal">
+        <div class="pic" style="background-image:url('https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&w=900&q=70')"></div>
+        <div class="body"><h3>Personal Loans</h3>
+          <p>Flexible funding for personal needs — bills, lifestyle, emergencies. Fast approval, no collateral and a fixed interest rate.</p>
+          <div class="meta"><span class="tag">From R5,000</span><span class="tag">Up to 60 months</span></div>
+          <a class="btn btn-ghost" style="margin-top:14px" href="register.html">Apply now</a>
+        </div>
+      </article>
+
+      <article class="loan reveal">
+        <div class="pic" style="background-image:url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=900&q=70')"></div>
+        <div class="body"><h3>Business Loans</h3>
+          <p>Capital to expand, buy equipment, fund inventory or smooth out cash flow. Built for entrepreneurs and SMEs.</p>
+          <div class="meta"><span class="tag">Up to R2M</span></div>
+          <a class="btn btn-ghost" style="margin-top:14px" href="register.html">Apply now</a>
+        </div>
+      </article>
+
+      <article class="loan reveal">
+        <div class="pic" style="background-image:url('https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=900&q=70')"></div>
+        <div class="body"><h3>Vehicle Loans</h3>
+          <p>Finance new, used or commercial vehicles with structured monthly repayments.</p>
+          <div class="meta"><span class="tag">Competitive rates</span></div>
+          <a class="btn btn-ghost" style="margin-top:14px" href="register.html">Apply now</a>
+        </div>
+      </article>
+
+      <article class="loan reveal">
+        <div class="pic" style="background-image:url('https://images.unsplash.com/photo-1560472354-b33ff0c44a43?auto=format&fit=crop&w=900&q=70')"></div>
+        <div class="body"><h3>Debt Consolidation</h3>
+          <p>One simple repayment instead of many. Combine multiple debts and reduce financial stress.</p>
+          <a class="btn btn-ghost" style="margin-top:14px" href="register.html">Apply now</a>
+        </div>
+      </article>
+
+      <article class="loan reveal">
+        <div class="pic" style="background-image:url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=70')"></div>
+        <div class="body"><h3>Education Loans</h3>
+          <p>Invest in your future with funding for tuition, training and study materials.</p>
+          <a class="btn btn-ghost" style="margin-top:14px" href="register.html">Apply now</a>
+        </div>
+      </article>
+
+      <article class="loan reveal">
+        <div class="pic" style="background-image:url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=900&q=70')"></div>
+        <div class="body"><h3>Emergency Cash</h3>
+          <p>Fast funding when you need it most — for unexpected bills and urgent needs.</p>
+          <a class="btn btn-ghost" style="margin-top:14px" href="register.html">Apply now</a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- NOTICE -->
+<section>
+  <div class="container">
+    <div class="banner reveal">
+      <div class="deco"></div>
+      <h2>Approval ≠ automatic payout</h2>
+      <p>To receive funds you must contact <strong>TIPFIN (PTY) LTD</strong> after approval to complete payout.</p>
+      <a class="btn btn-ghost" href="contact.html">Contact TIPFIN</a>
+    </div>
+  </div>
+</section>
+
+<div data-include="footer"></div>
+<div data-include="tabs"></div>
+<script src="_partials.js"></script>
+<script src="app.js"></script>
+<script>
+function calc(){
+  const amt = parseFloat(document.getElementById("calc-amount").value || 0);
+  const term = parseInt(document.getElementById("calc-term").value || 1);
+  if (!amt || !term) { document.getElementById("calc-result").textContent = "Enter an amount and term."; return; }
+  const total = amt * 1.03;
+  const monthly = total / term;
+  document.getElementById("calc-result").innerHTML =
+    "Total repayable: <strong>R " + total.toLocaleString(undefined,{maximumFractionDigits:2}) + "</strong><br/>" +
+    "Monthly: <strong>R " + monthly.toLocaleString(undefined,{maximumFractionDigits:2}) + "</strong> over " + term + " months";
+}
+document.getElementById("calc-amount").addEventListener("input", calc);
+document.getElementById("calc-term").addEventListener("input", calc);
+calc();
+</script>
+</body>
+</html>

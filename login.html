@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Sign in — TIPFIN</title>
+<link rel="icon" type="image/png" href="logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div data-include="header"></div>
+
+<div class="auth-shell">
+  <div class="auth-card reveal">
+    <div class="auth-logo"><img src="logo.png" alt="TipFin"/></div>
+    <h1>Welcome back</h1>
+    <p class="sub">Sign in with your registered email and ID number.</p>
+
+    <div id="login-msg"></div>
+    <form id="login-form">
+      <div class="field"><label>Email address</label>
+        <input required type="email" name="email" autocomplete="email"/></div>
+      <div class="field"><label>ID number (your password)</label>
+        <input required name="idno" inputmode="numeric" autocomplete="current-password"/></div>
+      <button class="btn btn-primary btn-block" type="submit" id="login-btn">
+        <span id="login-btn-text">Sign in</span>
+      </button>
+    </form>
+    <div class="switch">Don't have an account? <a href="register.html">Create one</a></div>
+  </div>
+</div>
+
+<div data-include="footer"></div>
+<div data-include="tabs"></div>
+<script src="_partials.js"></script>
+<script src="app.js"></script>
+<script>
+const form = document.getElementById("login-form");
+const msg = document.getElementById("login-msg");
+const btn = document.getElementById("login-btn");
+const btnText = document.getElementById("login-btn-text");
+
+form.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  msg.innerHTML = "";
+  btn.disabled = true;
+  btnText.innerHTML = '<span class="spinner"></span> Verifying...';
+
+  const fd = new FormData(form);
+  const email = String(fd.get("email")).trim().toLowerCase();
+  const idno  = String(fd.get("idno")).trim();
+
+  try {
+    const user = await TIPFIN_API.findUserByEmailAndId(email, idno);
+    if (!user) {
+      msg.innerHTML = '<div class="callout err">Email or ID number is incorrect. Try again, or <a href="register.html" style="color:#9a1f17;text-decoration:underline">create an account</a>.</div>';
+      btn.disabled = false; btnText.textContent = "Sign in";
+      return;
+    }
+
+    // Detect first login: store firstLoginAt only once per device
+    const stored = TIPFIN_SESSION.get();
+    const firstLoginAt = (stored && stored.email === email && stored.firstLoginAt) ? stored.firstLoginAt : Date.now();
+
+    const hasApplied = !!(user.loanAmount && String(user.loanAmount).trim() !== "");
+
+    const session = {
+      rowId: user.id,
+      email,
+      name: user.name || "",
+      lastname: user.lastname || "",
+      idno,
+      phone: user.Phonenumber || "",
+      registeredAt: stored?.registeredAt || Date.now(),
+      firstLoginAt,
+      hasApplied,
+      loanAmount: user.loanAmount || "",
+      loanType: user.loanType || "",
+      loanTearm: user.loanTearm || "",
+      loanPurpose: user.loanPurpose || "",
+      reference: user.reference || ""
+    };
+    TIPFIN_SESSION.set(session);
+
+    msg.innerHTML = '<div class="callout ok">Signed in. Redirecting...</div>';
+    setTimeout(()=>{ location.href = session.hasApplied ? "dashboard.html" : "apply.html"; }, 700);
+  } catch (err) {
+    console.error(err);
+    msg.innerHTML = '<div class="callout err">Could not sign in: '+ err.message +'</div>';
+    btn.disabled = false; btnText.textContent = "Sign in";
+  }
+});
+</script>
+</body>
+</html>

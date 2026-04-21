@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Dashboard — TIPFIN</title>
+<link rel="icon" type="image/png" href="logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div data-include="header"></div>
+
+<section style="padding-top:14px">
+  <div class="container">
+    <div class="dash">
+      <aside class="side reveal">
+        <div class="avatar" id="d-avatar">U</div>
+        <div class="uname" id="d-name">Loading...</div>
+        <div class="uemail" id="d-email"></div>
+        <ul>
+          <li><a href="dashboard.html" class="active">Overview</a></li>
+          <li><a href="profile.html">Profile</a></li>
+          <li><a href="apply.html">Apply / Update</a></li>
+          <li><a href="loans.html">Loan calculator</a></li>
+          <li><a href="contact.html">Contact TIPFIN</a></li>
+          <li><a href="#" id="logout">Sign out</a></li>
+        </ul>
+      </aside>
+
+      <div class="main">
+        <div class="card reveal" style="padding:24px">
+          <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:14px">
+            <div>
+              <div class="muted small" style="font-weight:700;letter-spacing:.06em;text-transform:uppercase">Welcome back</div>
+              <h2 id="d-greet" style="margin:6px 0">Hello.</h2>
+              <p id="d-summary" class="muted">Loading your application...</p>
+            </div>
+            <div id="d-status" class="badge muted">Loading</div>
+          </div>
+        </div>
+
+        <div class="kpis reveal">
+          <div class="kpi"><div class="lbl">Loan amount</div><div class="num" id="k-amount">—</div></div>
+          <div class="kpi"><div class="lbl">Loan type</div><div class="num" id="k-type" style="font-size:1rem">—</div></div>
+          <div class="kpi"><div class="lbl">Term</div><div class="num" id="k-term">—</div></div>
+          <div class="kpi"><div class="lbl">Monthly</div><div class="num" id="k-monthly">—</div></div>
+        </div>
+
+        <div class="card reveal">
+          <h3>Approval progress</h3>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+            <span class="muted small" id="prog-label">Verifying your application…</span>
+            <span class="muted small" id="prog-pct">0%</span>
+          </div>
+          <div class="progress"><span id="prog-bar" style="width:0%"></span></div>
+          <div id="prog-eta" class="muted small" style="margin-top:8px"></div>
+        </div>
+
+        <div class="card reveal">
+          <h3>Application timeline</h3>
+          <div class="timeline" style="margin-top:12px" id="d-timeline"></div>
+        </div>
+
+        <div class="grid cols-2 reveal">
+          <div class="card">
+            <h3>Document status</h3>
+            <ul style="list-style:none;padding:0;margin:10px 0 0">
+              <li style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)">ID Document <span class="badge ok">Uploaded</span></li>
+              <li style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)">Bank Statement / Payslip <span class="badge ok">Uploaded</span></li>
+              <li style="display:flex;justify-content:space-between;padding:8px 0">Approval Letter <span class="badge muted" id="d-letter">Pending</span></li>
+            </ul>
+            <a class="btn btn-ghost" style="margin-top:14px" href="apply.html">Update documents</a>
+          </div>
+          <div class="card">
+            <h3>Important payout notice</h3>
+            <p>After approval and tracking is complete, you must contact <strong>TIPFIN (PTY) LTD</strong> to finalize your payout.</p>
+            <a class="btn btn-primary" href="contact.html">Contact TIPFIN</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div data-include="footer"></div>
+<div data-include="tabs"></div>
+<script src="_partials.js"></script>
+<script src="app.js"></script>
+<script>
+const u = TIPFIN_SESSION.requireAuth();
+if (u){
+  const initial = (u.name?.[0] || u.email?.[0] || "U").toUpperCase();
+  document.getElementById("d-avatar").textContent = initial;
+  document.getElementById("d-name").textContent = ((u.name||"") + " " + (u.lastname||"")).trim() || "Welcome";
+  document.getElementById("d-email").textContent = u.email || "";
+  document.getElementById("d-greet").textContent = "Hello, " + (u.name || "there") + " 👋";
+
+  // First-login 30 minute approval window
+  const FIRST_LOGIN_WINDOW_MS = 30 * 60 * 1000;
+  const elapsed = Date.now() - (u.firstLoginAt || Date.now());
+  const inWindow = elapsed < FIRST_LOGIN_WINDOW_MS;
+
+  if (!u.hasApplied){
+    document.getElementById("d-summary").textContent = "You haven't applied yet — finish your application to start tracking.";
+    document.getElementById("d-status").textContent = "Not applied";
+    document.getElementById("d-status").className = "badge muted";
+  } else if (inWindow){
+    const remaining = FIRST_LOGIN_WINDOW_MS - elapsed;
+    const mins = Math.ceil(remaining/60000);
+    document.getElementById("d-summary").textContent = "Your application is being verified. First-time approval takes up to 30 minutes.";
+    document.getElementById("d-status").textContent = "Under review";
+    document.getElementById("d-status").className = "badge warn";
+    document.getElementById("prog-eta").textContent = "Estimated time remaining: " + mins + " min";
+  } else {
+    document.getElementById("d-summary").textContent = "Your application has been approved. Contact TIPFIN to complete payout.";
+    document.getElementById("d-status").textContent = "Approved · Awaiting TIPFIN";
+    document.getElementById("d-status").className = "badge ok";
+    document.getElementById("d-letter").textContent = "Available";
+    document.getElementById("d-letter").className = "badge ok";
+  }
+
+  // KPIs
+  const amount = parseFloat(u.loanAmount) || 0;
+  const term = parseInt(u.loanTearm) || 0;
+  document.getElementById("k-amount").textContent = amount ? "R " + amount.toLocaleString() : "—";
+  document.getElementById("k-type").textContent = u.loanType || "—";
+  document.getElementById("k-term").textContent = term ? term + " mo" : "—";
+  if (amount && term){
+    const monthly = (amount * 1.03) / term;
+    document.getElementById("k-monthly").textContent = "R " + monthly.toLocaleString(undefined,{maximumFractionDigits:2});
+  }
+
+  // Progress bar
+  const pct = !u.hasApplied ? 10
+    : inWindow ? Math.min(95, Math.floor(20 + (elapsed / FIRST_LOGIN_WINDOW_MS) * 70))
+    : 100;
+  setTimeout(()=>{
+    document.getElementById("prog-bar").style.width = pct + "%";
+    document.getElementById("prog-pct").textContent = pct + "%";
+  }, 200);
+
+  // Timeline
+  const events = [
+    { t: "Application submitted", s: u.appliedAt ? new Date(u.appliedAt).toLocaleString() : "Pending", state: u.hasApplied ? "done" : "" },
+    { t: "Documents uploaded",   s: u.hasApplied ? "Uploaded" : "Pending",  state: u.hasApplied ? "done" : "" },
+    { t: "Under review",          s: inWindow ? "In progress" : (u.hasApplied ? "Complete" : "Pending"), state: u.hasApplied ? (inWindow ? "now" : "done") : "" },
+    { t: "Approved",              s: !inWindow && u.hasApplied ? "Approved" : "Awaiting", state: !inWindow && u.hasApplied ? "done" : "" },
+    { t: "Awaiting TIPFIN payout", s: !inWindow && u.hasApplied ? "Contact TIPFIN to complete payout" : "Pending", state: !inWindow && u.hasApplied ? "now" : "" },
+  ];
+  document.getElementById("d-timeline").innerHTML = events.map(e =>
+    `<div class="ev ${e.state}"><div class="t">${e.t}</div><div class="s">${e.s}</div></div>`).join("");
+
+  document.getElementById("logout").addEventListener("click", e=>{
+    e.preventDefault(); TIPFIN_SESSION.clear(); location.href = "index.html";
+  });
+}
+</script>
+</body>
+</html>

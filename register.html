@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Create Account — TIPFIN</title>
+<link rel="icon" type="image/png" href="logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div data-include="header"></div>
+
+<div class="auth-shell">
+  <div class="auth-card reveal">
+    <div class="auth-logo"><img src="logo.png" alt="TipFin"/></div>
+    <h1>Create your account</h1>
+    <p class="sub">Register first, then you can apply for a loan and track everything from your dashboard.</p>
+
+    <div id="reg-msg"></div>
+    <form id="reg-form">
+      <div class="field"><label>First name</label><input required name="name" autocomplete="given-name"/></div>
+      <div class="field"><label>Last name</label><input required name="lastname" autocomplete="family-name"/></div>
+      <div class="field"><label>Email address</label><input required type="email" name="email" autocomplete="email"/></div>
+      <div class="field"><label>Phone number</label><input required type="tel" inputmode="numeric" name="phone" autocomplete="tel"/></div>
+      <div class="field"><label>ID number (used as your password)</label>
+        <input required name="idno" inputmode="numeric"/>
+        <span class="hint">We use your ID number as your secure login key.</span></div>
+      <button class="btn btn-primary btn-block" type="submit" id="reg-btn">
+        <span id="reg-btn-text">Create account</span>
+      </button>
+    </form>
+    <div class="switch">Already have an account? <a href="login.html">Sign in</a></div>
+  </div>
+</div>
+
+<div data-include="footer"></div>
+<div data-include="tabs"></div>
+<script src="_partials.js"></script>
+<script src="app.js"></script>
+<script>
+const form = document.getElementById("reg-form");
+const msg = document.getElementById("reg-msg");
+const btn = document.getElementById("reg-btn");
+const btnText = document.getElementById("reg-btn-text");
+
+form.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  msg.innerHTML = "";
+  btn.disabled = true;
+  btnText.innerHTML = '<span class="spinner"></span> Creating account...';
+
+  const fd = new FormData(form);
+  const email = String(fd.get("email")).trim().toLowerCase();
+  const idno  = String(fd.get("idno")).trim();
+
+  try {
+    const existing = await TIPFIN_API.findUserByEmail(email);
+    if (existing) {
+      msg.innerHTML = '<div class="callout err">An account with this email already exists. <a href="login.html" style="color:#9a1f17;text-decoration:underline">Sign in instead</a>.</div>';
+      btn.disabled = false; btnText.textContent = "Create account";
+      return;
+    }
+
+    const phone = parseInt(String(fd.get("phone")).replace(/\D/g,"")) || 0;
+
+    const payload = {
+      name: fd.get("name"),
+      lastname: fd.get("lastname"),
+      Email: email,
+      Phonenumber: phone,
+      idNo: idno
+    };
+    const row = await TIPFIN_API.createUserRow(payload);
+
+    const session = {
+      rowId: row.id,
+      email,
+      name: fd.get("name"),
+      lastname: fd.get("lastname"),
+      idno,
+      phone,
+      registeredAt: Date.now(),
+      firstLoginAt: Date.now(),
+      hasApplied: false
+    };
+    TIPFIN_SESSION.set(session);
+
+    msg.innerHTML = '<div class="callout ok">Account created. Redirecting you to apply...</div>';
+    setTimeout(()=>{ location.href = "apply.html"; }, 900);
+  } catch (err) {
+    console.error(err);
+    msg.innerHTML = '<div class="callout err">Could not create account: '+ err.message +'</div>';
+    btn.disabled = false; btnText.textContent = "Create account";
+  }
+});
+</script>
+</body>
+</html>

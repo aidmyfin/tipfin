@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Contact — TIPFIN</title>
+<link rel="icon" type="image/png" href="logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div data-include="header"></div>
+
+<section class="page-hero">
+  <div class="container reveal">
+    <div class="crumbs"><a href="index.html">Home</a> · Contact</div>
+    <h1>We're here to help</h1>
+    <p>Reach out for application assistance, technical support, loan queries — or to complete your final payout after approval.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="grid cols-3">
+      <div class="card reveal"><div class="ic">📧</div><h3>Email</h3>
+        <p><a href="mailto:info.tipfin@aol.com" style="color:var(--brand);font-weight:700">info.tipfin@aol.com</a></p>
+        <p class="small muted">Response within 24 hours.</p></div>
+      <div class="card reveal"><div class="ic">📞</div><h3>Phone Support</h3>
+        <p>Speak to our customer success team for fast assistance.</p>
+        <p class="small muted">Mon – Sat · 08:00 – 18:00</p></div>
+      <div class="card reveal"><div class="ic">💬</div><h3>WhatsApp</h3>
+        <p>Quick answers via WhatsApp business chat.</p>
+        <p class="small muted">Same-day replies.</p></div>
+    </div>
+
+    <div class="grid cols-2" style="gap:30px;margin-top:30px">
+      <div class="card reveal" style="padding:28px">
+        <h2>Send us a message</h2>
+        <form id="contact-form">
+          <div class="field"><label>Full name</label><input required name="name"/></div>
+          <div class="field"><label>Email</label><input required type="email" name="email"/></div>
+          <div class="field"><label>Topic</label>
+            <select name="topic">
+              <option>Application assistance</option>
+              <option>Technical issue</option>
+              <option>Loan query</option>
+              <option>Payout completion</option>
+              <option>Other</option>
+            </select></div>
+          <div class="field"><label>Message</label><textarea required name="message" rows="5"></textarea></div>
+          <button class="btn btn-primary btn-block" type="submit">Send message</button>
+          <div id="contact-status"></div>
+        </form>
+      </div>
+      <div class="reveal">
+        <div class="feature-img" style="margin-bottom:16px">
+          <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1200&q=70" alt="Customer support team"/>
+        </div>
+        <div class="card">
+          <h3>Office</h3>
+          <p>TIPFIN (PTY) LTD<br/>NCR Reg No: <strong>NCRCP22024</strong><br/>Legal Reg No: <strong>2024/669652/07</strong></p>
+          <p class="small muted">All payouts must be completed through TIPFIN (PTY) LTD after approval.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div data-include="footer"></div>
+<div data-include="tabs"></div>
+<script src="_partials.js"></script>
+<script src="app.js"></script>
+<script>
+document.getElementById("contact-form").addEventListener("submit", e=>{
+  e.preventDefault();
+  const status = document.getElementById("contact-status");
+  status.innerHTML = '<div class="callout ok" style="margin-top:12px">Thanks — we\'ve received your message. We\'ll respond within 24 hours.</div>';
+  e.target.reset();
+});
+</script>
+</body>
+</html>

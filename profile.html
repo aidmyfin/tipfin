@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Profile — TIPFIN</title>
+<link rel="icon" type="image/png" href="logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div data-include="header"></div>
+
+<section style="padding-top:14px">
+  <div class="container">
+    <div class="dash">
+      <aside class="side reveal">
+        <div class="avatar" id="p-avatar">U</div>
+        <div class="uname" id="p-name">User</div>
+        <div class="uemail" id="p-email"></div>
+        <ul>
+          <li><a href="dashboard.html">Overview</a></li>
+          <li><a href="profile.html" class="active">Profile</a></li>
+          <li><a href="apply.html">Apply / Update</a></li>
+          <li><a href="loans.html">Loan calculator</a></li>
+          <li><a href="contact.html">Contact TIPFIN</a></li>
+          <li><a href="#" id="p-logout">Sign out</a></li>
+        </ul>
+      </aside>
+      <div class="main">
+        <div class="card reveal" style="padding:24px">
+          <h2>Profile settings</h2>
+          <p>Update your personal details. Changes are saved securely.</p>
+          <div id="p-msg"></div>
+          <form id="p-form" style="margin-top:10px">
+            <div class="grid cols-2" style="gap:14px">
+              <div class="field"><label>First name</label><input required name="name"/></div>
+              <div class="field"><label>Last name</label><input required name="lastname"/></div>
+            </div>
+            <div class="grid cols-2" style="gap:14px">
+              <div class="field"><label>Email (read-only)</label><input name="email" disabled/></div>
+              <div class="field"><label>Phone number</label><input required type="tel" name="phone"/></div>
+            </div>
+            <div class="field"><label>ID number (your password)</label><input required name="idno"/></div>
+            <button class="btn btn-primary" type="submit" id="p-btn"><span id="p-btn-text">Save changes</span></button>
+          </form>
+        </div>
+
+        <div class="card reveal">
+          <h3>Account</h3>
+          <ul style="list-style:none;padding:0;margin:10px 0 0">
+            <li style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">Member since <span class="muted" id="p-since">—</span></li>
+            <li style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">Application reference <span class="muted" id="p-ref">—</span></li>
+            <li style="display:flex;justify-content:space-between;padding:10px 0">Loan status <span class="badge ok" id="p-stat">—</span></li>
+          </ul>
+        </div>
+
+        <div class="card reveal" style="border-color:#f4b6b1;background:#fff7f6">
+          <h3 style="color:#9a1f17">Danger zone</h3>
+          <p>Sign out from this device. Your data on TIPFIN remains safe.</p>
+          <button class="btn btn-ghost" id="p-logout2" style="border-color:#9a1f17;color:#9a1f17">Sign out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div data-include="footer"></div>
+<div data-include="tabs"></div>
+<script src="_partials.js"></script>
+<script src="app.js"></script>
+<script>
+const u = TIPFIN_SESSION.requireAuth();
+if (u){
+  document.getElementById("p-avatar").textContent = (u.name?.[0]||"U").toUpperCase();
+  document.getElementById("p-name").textContent = ((u.name||"")+" "+(u.lastname||"")).trim() || "User";
+  document.getElementById("p-email").textContent = u.email || "";
+  document.getElementById("p-since").textContent = u.registeredAt ? new Date(u.registeredAt).toLocaleDateString() : "—";
+  document.getElementById("p-ref").textContent = u.reference ? "#"+u.reference : "—";
+  document.getElementById("p-stat").textContent = u.hasApplied ? "Active application" : "No application";
+  document.getElementById("p-stat").className = u.hasApplied ? "badge ok" : "badge muted";
+
+  const form = document.getElementById("p-form");
+  form.name.value = u.name || "";
+  form.lastname.value = u.lastname || "";
+  form.email.value = u.email || "";
+  form.phone.value = u.phone || "";
+  form.idno.value = u.idno || "";
+
+  form.addEventListener("submit", async e=>{
+    e.preventDefault();
+    const btn = document.getElementById("p-btn");
+    const btnText = document.getElementById("p-btn-text");
+    const msg = document.getElementById("p-msg");
+    btn.disabled = true; btnText.innerHTML = '<span class="spinner"></span> Saving...';
+    try {
+      const phone = parseInt(String(form.phone.value).replace(/\D/g,"")) || 0;
+      await TIPFIN_API.updateUserRow(u.rowId, {
+        name: form.name.value,
+        lastname: form.lastname.value,
+        Phonenumber: phone,
+        idNo: form.idno.value
+      });
+      const next = { ...u, name: form.name.value, lastname: form.lastname.value, phone, idno: form.idno.value };
+      TIPFIN_SESSION.set(next);
+      msg.innerHTML = '<div class="callout ok" style="margin-top:12px">Profile updated.</div>';
+    } catch (err) {
+      msg.innerHTML = '<div class="callout err" style="margin-top:12px">Save failed: '+err.message+'</div>';
+    } finally {
+      btn.disabled = false; btnText.textContent = "Save changes";
+    }
+  });
+
+  document.getElementById("p-logout").addEventListener("click", e=>{ e.preventDefault(); TIPFIN_SESSION.clear(); location.href="index.html"; });
+  document.getElementById("p-logout2").addEventListener("click", e=>{ e.preventDefault(); TIPFIN_SESSION.clear(); location.href="index.html"; });
+}
+</script>
+</body>
+</html>
